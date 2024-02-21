@@ -1,17 +1,95 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://assets/imports/3D_Textures/test_stage_floor.png" type="Texture" id=1]
+[ext_resource path="res://assets/native/Shaders/Test_Stage_WaterShader.gdshader" type="Shader" id=2]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 1 )
-uv1_scale = Vector3( 2, 2, 2 )
 uv1_triplanar = true
 
 [sub_resource type="CubeMesh" id=2]
 material = SubResource( 1 )
-size = Vector3( 40, 0.5, 40 )
+size = Vector3( 40, 20, 40 )
+
+[sub_resource type="ConcavePolygonShape" id=3]
+data = PoolVector3Array( -20, 10, 20, 20, 10, 20, -20, -10, 20, 20, 10, 20, 20, -10, 20, -20, -10, 20, 20, 10, -20, -20, 10, -20, 20, -10, -20, -20, 10, -20, -20, -10, -20, 20, -10, -20, 20, 10, 20, 20, 10, -20, 20, -10, 20, 20, 10, -20, 20, -10, -20, 20, -10, 20, -20, 10, -20, -20, 10, 20, -20, -10, -20, -20, 10, 20, -20, -10, 20, -20, -10, -20, 20, 10, 20, -20, 10, 20, 20, 10, -20, -20, 10, 20, -20, 10, -20, 20, 10, -20, -20, -10, 20, 20, -10, 20, -20, -10, -20, 20, -10, 20, 20, -10, -20, -20, -10, -20 )
+
+[sub_resource type="OpenSimplexNoise" id=9]
+octaves = 9
+period = 40.4
+persistence = 0.118
+lacunarity = 1.64
+
+[sub_resource type="NoiseTexture" id=10]
+width = 1080
+height = 1080
+seamless = true
+as_normalmap = true
+bump_strength = 6.3
+noise = SubResource( 9 )
+
+[sub_resource type="ShaderMaterial" id=6]
+shader = ExtResource( 2 )
+shader_param/color = Plane( 0, 0.3, 1, 1 )
+shader_param/normalmap_scale = 6.0
+shader_param/spec = 0.7
+shader_param/rough = 0.4
+shader_param/water_speed = 0.02
+shader_param/normals = SubResource( 10 )
+
+[sub_resource type="PlaneMesh" id=7]
+material = SubResource( 6 )
+size = Vector2( 3000, 3000 )
+
+[sub_resource type="ProceduralSky" id=12]
+ground_bottom_color = Color( 0.580392, 0.796078, 1, 1 )
+ground_horizon_color = Color( 0.901961, 0.901961, 0.901961, 1 )
+sun_color = Color( 1, 0.996078, 0.909804, 1 )
+sun_curve = 0.0116629
+sun_energy = 2.62
+texture_size = 1
+
+[sub_resource type="Environment" id=11]
+background_mode = 2
+background_sky = SubResource( 12 )
+ambient_light_color = Color( 0.976471, 0.976471, 0.976471, 1 )
+ambient_light_energy = 0.4
+ambient_light_sky_contribution = 0.52
+fog_enabled = true
+fog_color = Color( 0.627451, 0.784314, 0.941176, 1 )
+fog_sun_color = Color( 1, 0.972549, 0.913725, 1 )
+fog_depth_end = 523.5
+fog_depth_curve = 4.28709
+dof_blur_far_distance = 102.33
+dof_blur_far_transition = 61.93
+dof_blur_far_amount = 0.07
+glow_enabled = true
+adjustment_enabled = true
 
 [node name="test_stage0" type="Spatial"]
 
-[node name="floor" type="MeshInstance" parent="."]
+[node name="level_geometry" type="Spatial" parent="."]
+
+[node name="floor" type="MeshInstance" parent="level_geometry"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12.1096, 0 )
+cast_shadow = 0
 mesh = SubResource( 2 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="level_geometry/floor"]
+
+[node name="CollisionShape" type="CollisionShape" parent="level_geometry/floor/StaticBody"]
+shape = SubResource( 3 )
+
+[node name="water" type="MeshInstance" parent="level_geometry"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -17.2451, 0 )
+mesh = SubResource( 7 )
+skeleton = NodePath("../..")
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 0.936562, 0.252987, -0.242588, 0, 0.692118, 0.721784, 0.350502, -0.675996, 0.648212, 0, 0, 0 )
+light_energy = 0.935
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 11 )
