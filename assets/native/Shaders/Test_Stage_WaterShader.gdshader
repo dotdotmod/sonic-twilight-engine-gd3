@@ -10,7 +10,7 @@ uniform sampler2D normals;
 
 void fragment() {
 	//The normal map thing here is for both making the water move and increasing the size
-	vec4 normal = texture(normals, UV * normalmap_scale * (TIME * water_speed));
+	vec4 normal = texture(normals, UV * vec2(6,6) * (TIME * water_speed));
 	
 	//Standard PBR stuff here
 	ALBEDO = color.xyz;

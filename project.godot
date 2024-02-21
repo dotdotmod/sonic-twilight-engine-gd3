@@ -11,6 +11,7 @@ config_version=4
 [application]
 
 config/name="Sonic the Hedghog: Twilight Framework"
+run/main_scene="res://assets/native/Levels/test_stage0.tscn"
 config/icon="res://icon.png"
 
 [gui]

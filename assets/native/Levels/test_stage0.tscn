@@ -1,32 +1,16 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://assets/imports/3D_Textures/test_stage_floor.png" type="Texture" id=1]
+[ext_resource path="res://assets/native/Materials/test_stage0 floor.tres" type="Material" id=1]
 [ext_resource path="res://assets/native/Shaders/Test_Stage_WaterShader.gdshader" type="Shader" id=2]
-
-[sub_resource type="SpatialMaterial" id=1]
-albedo_texture = ExtResource( 1 )
-uv1_triplanar = true
+[ext_resource path="res://assets/native/Characters/Sonic/Sonic.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/native/Procedural_Textures/test_stage0 water noise.tres" type="Texture" id=4]
 
 [sub_resource type="CubeMesh" id=2]
-material = SubResource( 1 )
+material = ExtResource( 1 )
 size = Vector3( 40, 20, 40 )
 
 [sub_resource type="ConcavePolygonShape" id=3]
 data = PoolVector3Array( -20, 10, 20, 20, 10, 20, -20, -10, 20, 20, 10, 20, 20, -10, 20, -20, -10, 20, 20, 10, -20, -20, 10, -20, 20, -10, -20, -20, 10, -20, -20, -10, -20, 20, -10, -20, 20, 10, 20, 20, 10, -20, 20, -10, 20, 20, 10, -20, 20, -10, -20, 20, -10, 20, -20, 10, -20, -20, 10, 20, -20, -10, -20, -20, 10, 20, -20, -10, 20, -20, -10, -20, 20, 10, 20, -20, 10, 20, 20, 10, -20, -20, 10, 20, -20, 10, -20, 20, 10, -20, -20, -10, 20, 20, -10, 20, -20, -10, -20, 20, -10, 20, 20, -10, -20, -20, -10, -20 )
-
-[sub_resource type="OpenSimplexNoise" id=9]
-octaves = 9
-period = 40.4
-persistence = 0.118
-lacunarity = 1.64
-
-[sub_resource type="NoiseTexture" id=10]
-width = 1080
-height = 1080
-seamless = true
-as_normalmap = true
-bump_strength = 6.3
-noise = SubResource( 9 )
 
 [sub_resource type="ShaderMaterial" id=6]
 shader = ExtResource( 2 )
@@ -35,11 +19,18 @@ shader_param/normalmap_scale = 6.0
 shader_param/spec = 0.7
 shader_param/rough = 0.4
 shader_param/water_speed = 0.02
-shader_param/normals = SubResource( 10 )
+shader_param/normals = ExtResource( 4 )
 
 [sub_resource type="PlaneMesh" id=7]
 material = SubResource( 6 )
 size = Vector2( 3000, 3000 )
+
+[sub_resource type="CubeMesh" id=13]
+material = ExtResource( 1 )
+size = Vector3( 10, 1, 6 )
+
+[sub_resource type="ConcavePolygonShape" id=14]
+data = PoolVector3Array( -5, 0.5, 3, 5, 0.5, 3, -5, -0.5, 3, 5, 0.5, 3, 5, -0.5, 3, -5, -0.5, 3, 5, 0.5, -3, -5, 0.5, -3, 5, -0.5, -3, -5, 0.5, -3, -5, -0.5, -3, 5, -0.5, -3, 5, 0.5, 3, 5, 0.5, -3, 5, -0.5, 3, 5, 0.5, -3, 5, -0.5, -3, 5, -0.5, 3, -5, 0.5, -3, -5, 0.5, 3, -5, -0.5, -3, -5, 0.5, 3, -5, -0.5, 3, -5, -0.5, -3, 5, 0.5, 3, -5, 0.5, 3, 5, 0.5, -3, -5, 0.5, 3, -5, 0.5, -3, 5, 0.5, -3, -5, -0.5, 3, 5, -0.5, 3, -5, -0.5, -3, 5, -0.5, 3, 5, -0.5, -3, -5, -0.5, -3 )
 
 [sub_resource type="ProceduralSky" id=12]
 ground_bottom_color = Color( 0.580392, 0.796078, 1, 1 )
@@ -82,14 +73,99 @@ skeleton = NodePath("../..")
 shape = SubResource( 3 )
 
 [node name="water" type="MeshInstance" parent="level_geometry"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -17.2451, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.66015, 0 )
 mesh = SubResource( 7 )
 skeleton = NodePath("../..")
 
+[node name="loop" type="Spatial" parent="level_geometry"]
+
+[node name="loop1" type="MeshInstance" parent="level_geometry/loop"]
+transform = Transform( 0.987491, 0.157676, 0, -0.157676, 0.987491, 0, 0, 0, 1, -24.0838, -1.92685, 15.3865 )
+mesh = SubResource( 13 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="level_geometry/loop/loop1"]
+
+[node name="CollisionShape" type="CollisionShape" parent="level_geometry/loop/loop1/StaticBody"]
+shape = SubResource( 14 )
+
+[node name="loop2" type="MeshInstance" parent="level_geometry/loop"]
+transform = Transform( 0.901092, 0.433628, 0, -0.433628, 0.901092, 0, 0, 0, 1, -33.2566, 0.79782, 15.3865 )
+mesh = SubResource( 13 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="level_geometry/loop/loop2"]
+
+[node name="CollisionShape" type="CollisionShape" parent="level_geometry/loop/loop2/StaticBody"]
+shape = SubResource( 14 )
+
+[node name="loop3" type="MeshInstance" parent="level_geometry/loop"]
+transform = Transform( 0.706526, 0.707687, 0, -0.707687, 0.706526, 0, 0, 0, 1, -39.9262, 5.48728, 15.3865 )
+mesh = SubResource( 13 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="level_geometry/loop/loop3"]
+
+[node name="CollisionShape" type="CollisionShape" parent="level_geometry/loop/loop3/StaticBody"]
+shape = SubResource( 14 )
+
+[node name="loop4" type="MeshInstance" parent="level_geometry/loop"]
+transform = Transform( 0.208782, 0.977962, 0, -0.977962, 0.208782, 0, 0, 0, 1, -44.2205, 12.3295, 15.3865 )
+mesh = SubResource( 13 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="level_geometry/loop/loop4"]
+
+[node name="CollisionShape" type="CollisionShape" parent="level_geometry/loop/loop4/StaticBody"]
+shape = SubResource( 14 )
+
+[node name="loop5" type="MeshInstance" parent="level_geometry/loop"]
+transform = Transform( -0.0626686, 0.998034, 0, -0.998034, -0.0626686, 0, 0, 0, 1, -44.9661, 20.6746, 15.3865 )
+mesh = SubResource( 13 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="level_geometry/loop/loop5"]
+
+[node name="CollisionShape" type="CollisionShape" parent="level_geometry/loop/loop5/StaticBody"]
+shape = SubResource( 14 )
+
+[node name="loop6" type="MeshInstance" parent="level_geometry/loop"]
+transform = Transform( -0.447759, 0.894154, 0, -0.894154, -0.447759, 0, 0, 0, 1, -42.9952, 28.7967, 15.3865 )
+mesh = SubResource( 13 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="level_geometry/loop/loop6"]
+
+[node name="CollisionShape" type="CollisionShape" parent="level_geometry/loop/loop6/StaticBody"]
+shape = SubResource( 14 )
+
+[node name="loop7" type="MeshInstance" parent="level_geometry/loop"]
+transform = Transform( -0.855156, 0.51837, 0, -0.51837, -0.855156, 0, 0, 0, 1, -37.2961, 35.1433, 15.3865 )
+mesh = SubResource( 13 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="level_geometry/loop/loop7"]
+
+[node name="CollisionShape" type="CollisionShape" parent="level_geometry/loop/loop7/StaticBody"]
+shape = SubResource( 14 )
+
+[node name="loop8" type="MeshInstance" parent="level_geometry/loop"]
+transform = Transform( -0.998875, 0.0474203, 0, -0.0474203, -0.998875, 0, 0, 0, 1, -29.1009, 37.6216, 15.3865 )
+mesh = SubResource( 13 )
+skeleton = NodePath("../..")
+
+[node name="StaticBody" type="StaticBody" parent="level_geometry/loop/loop8"]
+
+[node name="CollisionShape" type="CollisionShape" parent="level_geometry/loop/loop8/StaticBody"]
+shape = SubResource( 14 )
+
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
-transform = Transform( 0.936562, 0.252987, -0.242588, 0, 0.692118, 0.721784, 0.350502, -0.675996, 0.648212, 0, 0, 0 )
+transform = Transform( 0.936562, 0.252987, -0.242588, 0.0533437, 0.581174, 0.812029, 0.346419, -0.773456, 0.53081, 1.92991, 4.71334, 18.1016 )
 light_energy = 0.935
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 11 )
+
+[node name="Sonic" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.56245, 2.10654, 11.8965 )
